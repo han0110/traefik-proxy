@@ -14,7 +14,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml
       - ./traefik/acme.json:/etc/traefik/acme.json
-    environment: 
+    command:
       - --docker.domain=${TRAEFIK_DOCKER_DOMAIN:-your.domain.com}
       - --acme.email=${TRAEFIK_ACME_EMAIL:-example@your.domain.com}
       - --logLevel=${TRAEFIK_LOG_LEVEL:-INFO}
