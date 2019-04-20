@@ -14,7 +14,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.port=3000
       - traefik.backend=service1
       - traefik.frontend.rule=PathPrefixStrip:/v1
     environment:
@@ -26,7 +25,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.port=3000
       - traefik.backend=service2
       - traefik.frontend.rule=PathPrefixStrip:/v2
     environment:
@@ -38,7 +36,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.port=3000
       - traefik.backend=service3
       - traefik.frontend.rule=Host:v3.localhost
     environment:
@@ -50,7 +47,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.port=3000
       - traefik.backend=service4
       - traefik.frontend.rule=Host:v4.localhost
     environment:
