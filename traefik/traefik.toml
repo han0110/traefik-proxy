@@ -1,0 +1,26 @@
+debug = false
+
+defaultEntryPoints = ["https","http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+
+    entryPoint = "https"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+watch = true
+exposedByDefault = false
+
+[acme]
+storage = "/etc/traefik/acme.json"
+onHostRule = true
+caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+entryPoint = "https"
+  [acme.httpChallenge]
+  entryPoint = "http"

@@ -1,0 +1,30 @@
+version: '3.6'
+
+services:
+  traefik:
+    image: traefik
+    container_name: traefik
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - reverse-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ./traefik/acme.json:/etc/traefik/acme.json
+    environment: 
+      - --docker.domain=${TRAEFIK_DOCKER_DOMAIN:-your.domain.com}
+      - --acme.email=${TRAEFIK_ACME_EMAIL:-example@your.domain.com}
+      - --logLevel=${TRAEFIK_LOG_LEVEL:-INFO}
+    logging:
+      driver: ${TRAEFIK_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${TRAEFIK_LOG_MAX_SIZE:-4m}
+        max-file: ${TRAEFIK_LOG_MAX_FILE:-10}
+
+networks:
+  reverse-proxy:
+    external:
+      name: ${REVERSE_PROXY_NETWORK:-reverse-proxy}
