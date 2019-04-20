@@ -1,0 +1,66 @@
+version: '3.6'
+
+x-service-common: &service-common
+  build: service
+  image: traefik-proxy-example-service:latest
+  networks:
+    - reverse-proxy
+    - services
+
+services:
+
+  service1:
+    << : *service-common
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
+      - traefik.port=3000
+      - traefik.backend=service1
+      - traefik.frontend.rule=PathPrefixStrip:/v1
+    environment:
+      - ID=PathPrefixStrip /v1
+      - PORT=3000
+
+  service2:
+    << : *service-common
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
+      - traefik.port=3000
+      - traefik.backend=service2
+      - traefik.frontend.rule=PathPrefixStrip:/v2
+    environment:
+      - ID=PathPrefixStrip /v2
+      - PORT=3000
+
+  service3:
+    << : *service-common
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
+      - traefik.port=3000
+      - traefik.backend=service3
+      - traefik.frontend.rule=Host:v3.localhost
+    environment:
+      - ID=Host v3.localhost
+      - PORT=3000
+
+  service4:
+    << : *service-common
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
+      - traefik.port=3000
+      - traefik.backend=service4
+      - traefik.frontend.rule=Host:v4.localhost
+    environment:
+      - ID=Host v4.localhost
+      - PORT=3000
+
+networks:
+  reverse-proxy:
+    external:
+      name: ${REVERSE_PROXY_NETWORK:-reverse-proxy}
+  services:
+    external:
+      name: ${SERVICES_NETWORK:-services}
