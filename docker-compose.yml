@@ -16,6 +16,7 @@ services:
       - ./traefik/acme.json:/etc/traefik/acme.json
     command:
       - --docker.domain=${TRAEFIK_DOCKER_DOMAIN:-your.domain.com}
+      - --docker.network=${TRAEFIK_DOCKER_NETWORK:-reverse-proxy}
       - --acme.email=${TRAEFIK_ACME_EMAIL:-example@your.domain.com}
       - --logLevel=${TRAEFIK_LOG_LEVEL:-INFO}
     logging:
