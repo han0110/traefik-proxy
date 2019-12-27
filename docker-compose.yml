@@ -14,10 +14,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml
-      - ./traefik/acme.json:${TRAEFIK_ACME_STORAGE:-/etc/traefik/acme.json}
+      - ./traefik/acme.json:/acme.json
     command:
-      - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_ACME_EMAIL:-example@your.domain.com}
-      - --certificatesresolvers.letsencrypt.acme.storage=${TRAEFIK_ACME_STORAGE:-/etc/traefik/acme.json}
       - --providers.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
     logging:
       driver: ${LOG_DRIVER:-json-file}
