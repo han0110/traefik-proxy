@@ -1,0 +1,19 @@
+log:
+  level: DEBUG
+
+entryPoints:
+  traefik:
+    address: ":80"
+  traefik-secure:
+    address: ":443"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      httpChallenge:
+        entryPoint: traefik
+
+providers:
+  docker:
+    watch: true
+    exposedByDefault: false
