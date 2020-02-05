@@ -1,66 +1,20 @@
 version: '3.6'
 
-x-service-common: &service-common
-  build: service
-  image: traefik-proxy-example-service:latest
-  networks:
-    - reverse-proxy
-    - services
-
 services:
-
-  service1:
-    << : *service-common
+  whoami:
+    image: "containous/whoami"
+    container_name: "whoami"
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.basic.frontend.rule=PathPrefixStrip:/v1
-      - traefik.basic.port=3000
-      - traefik.basic.protocol=http
-    environment:
-      - ID=PathPrefixStrip /v1
-      - PORT=3000
-
-  service2:
-    << : *service-common
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.basic.frontend.rule=PathPrefixStrip:/v2
-      - traefik.basic.port=3000
-      - traefik.basic.protocol=http
-    environment:
-      - ID=PathPrefixStrip /v2
-      - PORT=3000
-
-  service3:
-    << : *service-common
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.basic.frontend.rule=Host:v3.localhost
-      - traefik.basic.port=3000
-      - traefik.basic.protocol=http
-    environment:
-      - ID=Host v3.localhost
-      - PORT=3000
-
-  service4:
-    << : *service-common
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
-      - traefik.basic.frontend.rule=Host:v4.localhost
-      - traefik.basic.port=3000
-      - traefik.basic.protocol=http
-    environment:
-      - ID=Host v4.localhost
-      - PORT=3000
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.your.domain`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=tlschallenge"
+    networks:
+      - reverse-proxy
+      - services
 
 networks:
   reverse-proxy:
-    external:
-      name: ${REVERSE_PROXY_NETWORK:-reverse-proxy}
+    external: true
   services:
-    external:
-      name: ${SERVICES_NETWORK:-services}
+    external: true

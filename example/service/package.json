@@ -1,9 +1,0 @@
-{
-  "name": "traefik-proxy-example",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "koa": "^2.7.0"
-  }
-}

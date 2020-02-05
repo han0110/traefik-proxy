@@ -2,21 +2,25 @@ version: '3.6'
 
 services:
   traefik:
-    image: traefik:v2.1
-    container_name: traefik
-    restart: always
+    image: 'traefik:v2.1'
+    container_name: 'traefik'
+    command:
+      - '--log.level=${LOG_LEVEL:-ERROR}'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}'
+      - '--entrypoints.websecure.address=:443'
+      - '--certificatesresolvers.tlschallenge.acme.tlschallenge=true'
+      - '--certificatesresolvers.tlschallenge.acme.email=${ACME_EMAIL:-youremail@your.domain}'
+      - '--certificatesresolvers.tlschallenge.acme.storage=/acme.json'
     ports:
-      - 80:80
-      - 443:443
+      - '443:443'
+    volumes:
+      - './traefik/acme.json:/acme.json'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
     networks:
       - reverse-proxy
       - services
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
-      - ./traefik/acme.json:/acme.json
-    command:
-      - --providers.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}
     logging:
       driver: ${LOG_DRIVER:-json-file}
       options:
