@@ -20,7 +20,6 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     networks:
       - reverse-proxy
-      - services
     logging:
       driver: ${LOG_DRIVER:-json-file}
       options:
@@ -31,6 +30,3 @@ networks:
   reverse-proxy:
     external:
       name: ${REVERSE_PROXY_NETWORK:-reverse-proxy}
-  services:
-    external:
-      name: ${SERVICES_NETWORK:-services}

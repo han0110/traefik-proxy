@@ -11,10 +11,7 @@ services:
       - "traefik.http.routers.whoami.tls.certresolver=tlschallenge"
     networks:
       - reverse-proxy
-      - services
 
 networks:
   reverse-proxy:
-    external: true
-  services:
     external: true
