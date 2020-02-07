@@ -9,17 +9,26 @@ services:
       - '--providers.docker=true'
       - '--providers.docker.exposedbydefault=false'
       - '--providers.docker.network=${REVERSE_PROXY_NETWORK:-reverse-proxy}'
+      - '--entrypoints.web.address=:80'
       - '--entrypoints.websecure.address=:443'
       - '--certificatesresolvers.tlschallenge.acme.tlschallenge=true'
       - '--certificatesresolvers.tlschallenge.acme.email=${ACME_EMAIL:-youremail@your.domain}'
       - '--certificatesresolvers.tlschallenge.acme.storage=/acme.json'
     ports:
+      - '80:80'
       - '443:443'
     volumes:
       - './traefik/acme.json:/acme.json'
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     networks:
       - reverse-proxy
+    labels:
+      # Redirect all http to https
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.http-all.rule=hostregexp(`{host:.+}`)'
+      - 'traefik.http.routers.http-all.entrypoints=web'
+      - 'traefik.http.routers.http-all.middlewares=redirect-to-https'
+      - 'traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https' 
     logging:
       driver: ${LOG_DRIVER:-json-file}
       options:
